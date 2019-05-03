@@ -28,6 +28,7 @@ type Link {
   description: String!
   url: String!
   postedBy: User
+  votes(where: VoteWhereInput, orderBy: VoteOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Vote!]
 }
 
 type LinkConnection {
@@ -41,6 +42,7 @@ input LinkCreateInput {
   description: String!
   url: String!
   postedBy: UserCreateOneWithoutLinksInput
+  votes: VoteCreateManyWithoutLinkInput
 }
 
 input LinkCreateManyWithoutPostedByInput {
@@ -48,8 +50,8 @@ input LinkCreateManyWithoutPostedByInput {
   connect: [LinkWhereUniqueInput!]
 }
 
-input LinkCreateOneInput {
-  create: LinkCreateInput
+input LinkCreateOneWithoutVotesInput {
+  create: LinkCreateWithoutVotesInput
   connect: LinkWhereUniqueInput
 }
 
@@ -57,6 +59,14 @@ input LinkCreateWithoutPostedByInput {
   id: ID
   description: String!
   url: String!
+  votes: VoteCreateManyWithoutLinkInput
+}
+
+input LinkCreateWithoutVotesInput {
+  id: ID
+  description: String!
+  url: String!
+  postedBy: UserCreateOneWithoutLinksInput
 }
 
 type LinkEdge {
@@ -167,16 +177,11 @@ input LinkSubscriptionWhereInput {
   NOT: [LinkSubscriptionWhereInput!]
 }
 
-input LinkUpdateDataInput {
-  description: String
-  url: String
-  postedBy: UserUpdateOneWithoutLinksInput
-}
-
 input LinkUpdateInput {
   description: String
   url: String
   postedBy: UserUpdateOneWithoutLinksInput
+  votes: VoteUpdateManyWithoutLinkInput
 }
 
 input LinkUpdateManyDataInput {
@@ -206,16 +211,23 @@ input LinkUpdateManyWithWhereNestedInput {
   data: LinkUpdateManyDataInput!
 }
 
-input LinkUpdateOneRequiredInput {
-  create: LinkCreateInput
-  update: LinkUpdateDataInput
-  upsert: LinkUpsertNestedInput
+input LinkUpdateOneRequiredWithoutVotesInput {
+  create: LinkCreateWithoutVotesInput
+  update: LinkUpdateWithoutVotesDataInput
+  upsert: LinkUpsertWithoutVotesInput
   connect: LinkWhereUniqueInput
 }
 
 input LinkUpdateWithoutPostedByDataInput {
   description: String
   url: String
+  votes: VoteUpdateManyWithoutLinkInput
+}
+
+input LinkUpdateWithoutVotesDataInput {
+  description: String
+  url: String
+  postedBy: UserUpdateOneWithoutLinksInput
 }
 
 input LinkUpdateWithWhereUniqueWithoutPostedByInput {
@@ -223,9 +235,9 @@ input LinkUpdateWithWhereUniqueWithoutPostedByInput {
   data: LinkUpdateWithoutPostedByDataInput!
 }
 
-input LinkUpsertNestedInput {
-  update: LinkUpdateDataInput!
-  create: LinkCreateInput!
+input LinkUpsertWithoutVotesInput {
+  update: LinkUpdateWithoutVotesDataInput!
+  create: LinkCreateWithoutVotesInput!
 }
 
 input LinkUpsertWithWhereUniqueWithoutPostedByInput {
@@ -294,6 +306,9 @@ input LinkWhereInput {
   url_ends_with: String
   url_not_ends_with: String
   postedBy: UserWhereInput
+  votes_every: VoteWhereInput
+  votes_some: VoteWhereInput
+  votes_none: VoteWhereInput
   AND: [LinkWhereInput!]
   OR: [LinkWhereInput!]
   NOT: [LinkWhereInput!]
@@ -593,8 +608,13 @@ type VoteConnection {
 
 input VoteCreateInput {
   id: ID
-  link: LinkCreateOneInput!
+  link: LinkCreateOneWithoutVotesInput!
   user: UserCreateOneWithoutVotesInput!
+}
+
+input VoteCreateManyWithoutLinkInput {
+  create: [VoteCreateWithoutLinkInput!]
+  connect: [VoteWhereUniqueInput!]
 }
 
 input VoteCreateManyWithoutUserInput {
@@ -602,9 +622,14 @@ input VoteCreateManyWithoutUserInput {
   connect: [VoteWhereUniqueInput!]
 }
 
+input VoteCreateWithoutLinkInput {
+  id: ID
+  user: UserCreateOneWithoutVotesInput!
+}
+
 input VoteCreateWithoutUserInput {
   id: ID
-  link: LinkCreateOneInput!
+  link: LinkCreateOneWithoutVotesInput!
 }
 
 type VoteEdge {
@@ -660,8 +685,19 @@ input VoteSubscriptionWhereInput {
 }
 
 input VoteUpdateInput {
-  link: LinkUpdateOneRequiredInput
+  link: LinkUpdateOneRequiredWithoutVotesInput
   user: UserUpdateOneRequiredWithoutVotesInput
+}
+
+input VoteUpdateManyWithoutLinkInput {
+  create: [VoteCreateWithoutLinkInput!]
+  delete: [VoteWhereUniqueInput!]
+  connect: [VoteWhereUniqueInput!]
+  set: [VoteWhereUniqueInput!]
+  disconnect: [VoteWhereUniqueInput!]
+  update: [VoteUpdateWithWhereUniqueWithoutLinkInput!]
+  upsert: [VoteUpsertWithWhereUniqueWithoutLinkInput!]
+  deleteMany: [VoteScalarWhereInput!]
 }
 
 input VoteUpdateManyWithoutUserInput {
@@ -675,13 +711,28 @@ input VoteUpdateManyWithoutUserInput {
   deleteMany: [VoteScalarWhereInput!]
 }
 
+input VoteUpdateWithoutLinkDataInput {
+  user: UserUpdateOneRequiredWithoutVotesInput
+}
+
 input VoteUpdateWithoutUserDataInput {
-  link: LinkUpdateOneRequiredInput
+  link: LinkUpdateOneRequiredWithoutVotesInput
+}
+
+input VoteUpdateWithWhereUniqueWithoutLinkInput {
+  where: VoteWhereUniqueInput!
+  data: VoteUpdateWithoutLinkDataInput!
 }
 
 input VoteUpdateWithWhereUniqueWithoutUserInput {
   where: VoteWhereUniqueInput!
   data: VoteUpdateWithoutUserDataInput!
+}
+
+input VoteUpsertWithWhereUniqueWithoutLinkInput {
+  where: VoteWhereUniqueInput!
+  update: VoteUpdateWithoutLinkDataInput!
+  create: VoteCreateWithoutLinkInput!
 }
 
 input VoteUpsertWithWhereUniqueWithoutUserInput {
