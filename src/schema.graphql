@@ -1,16 +1,4 @@
-type SystemInfo {
-  uid: Int!
-  gid: Int!
-  username: String!
-  cpus: Int!
-  arch: String!
-  freemem: Float!
-  totalmem: Float!
-  usedMemoryPercent: Float!
-}
 type Query {
-  info: String!
-  osInfo: SystemInfo
   feed: [Link]!
   link(id: ID!): Link
 }
