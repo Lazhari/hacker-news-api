@@ -1,3 +1,4 @@
+const { getUserId } = require("../utils");
 async function feed(root, args, context, info) {
   const where = args.filter
     ? {
@@ -7,6 +8,13 @@ async function feed(root, args, context, info) {
         ]
       }
     : {};
+
+  if (args.mine) {
+    const userId = getUserId(context);
+    where.postedBy = {
+      id: userId
+    };
+  }
   const links = await context.prisma.links({
     where,
     skip: args.skip,

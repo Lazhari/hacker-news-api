@@ -10,10 +10,27 @@ function post(parent, args, context) {
     postedBy: { connect: { id: userId } }
   });
 }
-function updateLink(parent, { id, ...data }, context, info) {
-  return context.prisma.updateLink({ data, where: { id } });
+async function updateLink(parent, { id, ...data }, context, info) {
+  const userId = getUserId(context);
+  const linkExists = await context.prisma.$exists.link({
+    postedBy: { id: userId }
+  });
+  if (!linkExists) {
+    throw new Error(`Link not found ${id}`);
+  }
+  return context.prisma.updateLink({
+    data,
+    where: { id }
+  });
 }
-function deleteLink(parent, { id }, context) {
+async function deleteLink(parent, { id }, context) {
+  const userId = getUserId(context);
+  const linkExists = await context.prisma.$exists.link({
+    postedBy: { id: userId }
+  });
+  if (!linkExists) {
+    throw new Error(`Link not found ${id}`);
+  }
   return context.prisma.deleteLink({ id });
 }
 

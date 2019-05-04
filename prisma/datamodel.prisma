@@ -5,7 +5,7 @@ type Link {
   description: String!
   url: String!
   postedBy: User
-  votes: [Vote!]!
+  votes: [Vote!]! @relation(onDelete: CASCADE)
 }
 
 type User {
