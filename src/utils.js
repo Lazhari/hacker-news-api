@@ -3,7 +3,6 @@ const APP_SECRET = "Blog-using-GraphQL-aw3some";
 
 function getUserId(context) {
   const Authorization = context.request.get("Authorization");
-  console.log("Authorization", Authorization);
   if (Authorization) {
     const token = Authorization.replace("Bearer ", "");
     const { userId } = jwt.verify(token, APP_SECRET);
