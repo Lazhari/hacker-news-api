@@ -8,6 +8,15 @@ type Link {
   votes: [Vote!]! @relation(onDelete: CASCADE)
 }
 
+type Comment {
+  id: ID! @id
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+  body: String!
+  postedBt: User!
+  link: Link!
+}
+
 type User {
   id: ID! @id
   name: String!

@@ -3,7 +3,11 @@ module.exports = {
   // Please don't change this file manually but run `prisma generate` to update it.
   // For more information, please read the docs: https://www.prisma.io/docs/prisma-client/
 
-/* GraphQL */ `type AggregateLink {
+/* GraphQL */ `type AggregateComment {
+  count: Int!
+}
+
+type AggregateLink {
   count: Int!
 }
 
@@ -17,6 +21,135 @@ type AggregateVote {
 
 type BatchPayload {
   count: Long!
+}
+
+type Comment {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  body: String!
+  postedBt: User!
+  link: Link!
+}
+
+type CommentConnection {
+  pageInfo: PageInfo!
+  edges: [CommentEdge]!
+  aggregate: AggregateComment!
+}
+
+input CommentCreateInput {
+  id: ID
+  body: String!
+  postedBt: UserCreateOneInput!
+  link: LinkCreateOneInput!
+}
+
+type CommentEdge {
+  node: Comment!
+  cursor: String!
+}
+
+enum CommentOrderByInput {
+  id_ASC
+  id_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  body_ASC
+  body_DESC
+}
+
+type CommentPreviousValues {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  body: String!
+}
+
+type CommentSubscriptionPayload {
+  mutation: MutationType!
+  node: Comment
+  updatedFields: [String!]
+  previousValues: CommentPreviousValues
+}
+
+input CommentSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: CommentWhereInput
+  AND: [CommentSubscriptionWhereInput!]
+  OR: [CommentSubscriptionWhereInput!]
+  NOT: [CommentSubscriptionWhereInput!]
+}
+
+input CommentUpdateInput {
+  body: String
+  postedBt: UserUpdateOneRequiredInput
+  link: LinkUpdateOneRequiredInput
+}
+
+input CommentUpdateManyMutationInput {
+  body: String
+}
+
+input CommentWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  body: String
+  body_not: String
+  body_in: [String!]
+  body_not_in: [String!]
+  body_lt: String
+  body_lte: String
+  body_gt: String
+  body_gte: String
+  body_contains: String
+  body_not_contains: String
+  body_starts_with: String
+  body_not_starts_with: String
+  body_ends_with: String
+  body_not_ends_with: String
+  postedBt: UserWhereInput
+  link: LinkWhereInput
+  AND: [CommentWhereInput!]
+  OR: [CommentWhereInput!]
+  NOT: [CommentWhereInput!]
+}
+
+input CommentWhereUniqueInput {
+  id: ID
 }
 
 scalar DateTime
@@ -48,6 +181,11 @@ input LinkCreateInput {
 input LinkCreateManyWithoutPostedByInput {
   create: [LinkCreateWithoutPostedByInput!]
   connect: [LinkWhereUniqueInput!]
+}
+
+input LinkCreateOneInput {
+  create: LinkCreateInput
+  connect: LinkWhereUniqueInput
 }
 
 input LinkCreateOneWithoutVotesInput {
@@ -177,6 +315,13 @@ input LinkSubscriptionWhereInput {
   NOT: [LinkSubscriptionWhereInput!]
 }
 
+input LinkUpdateDataInput {
+  description: String
+  url: String
+  postedBy: UserUpdateOneWithoutLinksInput
+  votes: VoteUpdateManyWithoutLinkInput
+}
+
 input LinkUpdateInput {
   description: String
   url: String
@@ -211,6 +356,13 @@ input LinkUpdateManyWithWhereNestedInput {
   data: LinkUpdateManyDataInput!
 }
 
+input LinkUpdateOneRequiredInput {
+  create: LinkCreateInput
+  update: LinkUpdateDataInput
+  upsert: LinkUpsertNestedInput
+  connect: LinkWhereUniqueInput
+}
+
 input LinkUpdateOneRequiredWithoutVotesInput {
   create: LinkCreateWithoutVotesInput
   update: LinkUpdateWithoutVotesDataInput
@@ -233,6 +385,11 @@ input LinkUpdateWithoutVotesDataInput {
 input LinkUpdateWithWhereUniqueWithoutPostedByInput {
   where: LinkWhereUniqueInput!
   data: LinkUpdateWithoutPostedByDataInput!
+}
+
+input LinkUpsertNestedInput {
+  update: LinkUpdateDataInput!
+  create: LinkCreateInput!
 }
 
 input LinkUpsertWithoutVotesInput {
@@ -321,6 +478,12 @@ input LinkWhereUniqueInput {
 scalar Long
 
 type Mutation {
+  createComment(data: CommentCreateInput!): Comment!
+  updateComment(data: CommentUpdateInput!, where: CommentWhereUniqueInput!): Comment
+  updateManyComments(data: CommentUpdateManyMutationInput!, where: CommentWhereInput): BatchPayload!
+  upsertComment(where: CommentWhereUniqueInput!, create: CommentCreateInput!, update: CommentUpdateInput!): Comment!
+  deleteComment(where: CommentWhereUniqueInput!): Comment
+  deleteManyComments(where: CommentWhereInput): BatchPayload!
   createLink(data: LinkCreateInput!): Link!
   updateLink(data: LinkUpdateInput!, where: LinkWhereUniqueInput!): Link
   updateManyLinks(data: LinkUpdateManyMutationInput!, where: LinkWhereInput): BatchPayload!
@@ -358,6 +521,9 @@ type PageInfo {
 }
 
 type Query {
+  comment(where: CommentWhereUniqueInput!): Comment
+  comments(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Comment]!
+  commentsConnection(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CommentConnection!
   link(where: LinkWhereUniqueInput!): Link
   links(where: LinkWhereInput, orderBy: LinkOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Link]!
   linksConnection(where: LinkWhereInput, orderBy: LinkOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): LinkConnection!
@@ -371,6 +537,7 @@ type Query {
 }
 
 type Subscription {
+  comment(where: CommentSubscriptionWhereInput): CommentSubscriptionPayload
   link(where: LinkSubscriptionWhereInput): LinkSubscriptionPayload
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
   vote(where: VoteSubscriptionWhereInput): VoteSubscriptionPayload
@@ -398,6 +565,11 @@ input UserCreateInput {
   password: String!
   links: LinkCreateManyWithoutPostedByInput
   votes: VoteCreateManyWithoutUserInput
+}
+
+input UserCreateOneInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
 }
 
 input UserCreateOneWithoutLinksInput {
@@ -467,6 +639,14 @@ input UserSubscriptionWhereInput {
   NOT: [UserSubscriptionWhereInput!]
 }
 
+input UserUpdateDataInput {
+  name: String
+  email: String
+  password: String
+  links: LinkUpdateManyWithoutPostedByInput
+  votes: VoteUpdateManyWithoutUserInput
+}
+
 input UserUpdateInput {
   name: String
   email: String
@@ -479,6 +659,13 @@ input UserUpdateManyMutationInput {
   name: String
   email: String
   password: String
+}
+
+input UserUpdateOneRequiredInput {
+  create: UserCreateInput
+  update: UserUpdateDataInput
+  upsert: UserUpsertNestedInput
+  connect: UserWhereUniqueInput
 }
 
 input UserUpdateOneRequiredWithoutVotesInput {
@@ -509,6 +696,11 @@ input UserUpdateWithoutVotesDataInput {
   email: String
   password: String
   links: LinkUpdateManyWithoutPostedByInput
+}
+
+input UserUpsertNestedInput {
+  update: UserUpdateDataInput!
+  create: UserCreateInput!
 }
 
 input UserUpsertWithoutLinksInput {
