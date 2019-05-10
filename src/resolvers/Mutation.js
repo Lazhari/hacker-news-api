@@ -84,11 +84,28 @@ async function vote(parent, args, context, info) {
   });
 }
 
+async function comment(parent, args, context, info) {
+  const userId = getUserId(context);
+
+  const linkExits = await context.prisma.$exists.link({ id: args.linkId });
+
+  if (!linkExits) {
+    throw new Error(`There's no link with this ID: ${args.linkId}`);
+  }
+
+  return context.prisma.createComment({
+    postedBy: { connect: { id: userId } },
+    link: { connect: { id: args.linkId } },
+    body: args.body
+  });
+}
+
 module.exports = {
   post,
   updateLink,
   deleteLink,
   signup,
   login,
-  vote
+  vote,
+  comment
 };

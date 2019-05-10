@@ -17,6 +17,7 @@ type Mutation {
   signup(email: String!, password: String!, name: String!): AuthPayload
   login(email: String!, password: String!): AuthPayload
   vote(linkId: ID!): Vote
+  comment(linkId: ID!, body: String!): Comment
 }
 
 type Subscription {
@@ -36,6 +37,7 @@ type Link {
   postedBy: User
   createdAt: DateTime
   votes: [Vote!]!
+  comments: [Comment!]!
 }
 
 enum LinkOrderByInput {
@@ -51,6 +53,15 @@ type Vote {
   id: ID!
   link: Link!
   user: User!
+}
+
+type Comment {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  body: String!
+  createdBy: User!
+  link: Link!
 }
 
 type AuthPayload {

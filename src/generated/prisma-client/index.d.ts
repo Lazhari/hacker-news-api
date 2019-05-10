@@ -317,6 +317,9 @@ export interface LinkWhereInput {
   votes_every?: Maybe<VoteWhereInput>;
   votes_some?: Maybe<VoteWhereInput>;
   votes_none?: Maybe<VoteWhereInput>;
+  comments_every?: Maybe<CommentWhereInput>;
+  comments_some?: Maybe<CommentWhereInput>;
+  comments_none?: Maybe<CommentWhereInput>;
   AND?: Maybe<LinkWhereInput[] | LinkWhereInput>;
   OR?: Maybe<LinkWhereInput[] | LinkWhereInput>;
   NOT?: Maybe<LinkWhereInput[] | LinkWhereInput>;
@@ -457,7 +460,7 @@ export interface CommentWhereInput {
   body_not_starts_with?: Maybe<String>;
   body_ends_with?: Maybe<String>;
   body_not_ends_with?: Maybe<String>;
-  postedBt?: Maybe<UserWhereInput>;
+  createdBy?: Maybe<UserWhereInput>;
   link?: Maybe<LinkWhereInput>;
   AND?: Maybe<CommentWhereInput[] | CommentWhereInput>;
   OR?: Maybe<CommentWhereInput[] | CommentWhereInput>;
@@ -480,8 +483,8 @@ export type VoteWhereUniqueInput = AtLeastOne<{
 export interface CommentCreateInput {
   id?: Maybe<ID_Input>;
   body: String;
-  postedBt: UserCreateOneInput;
-  link: LinkCreateOneInput;
+  createdBy: UserCreateOneInput;
+  link: LinkCreateOneWithoutCommentsInput;
 }
 
 export interface UserCreateOneInput {
@@ -510,6 +513,7 @@ export interface LinkCreateWithoutPostedByInput {
   description: String;
   url: String;
   votes?: Maybe<VoteCreateManyWithoutLinkInput>;
+  comments?: Maybe<CommentCreateManyWithoutLinkInput>;
 }
 
 export interface VoteCreateManyWithoutLinkInput {
@@ -535,6 +539,19 @@ export interface UserCreateWithoutVotesInput {
   links?: Maybe<LinkCreateManyWithoutPostedByInput>;
 }
 
+export interface CommentCreateManyWithoutLinkInput {
+  create?: Maybe<
+    CommentCreateWithoutLinkInput[] | CommentCreateWithoutLinkInput
+  >;
+  connect?: Maybe<CommentWhereUniqueInput[] | CommentWhereUniqueInput>;
+}
+
+export interface CommentCreateWithoutLinkInput {
+  id?: Maybe<ID_Input>;
+  body: String;
+  createdBy: UserCreateOneInput;
+}
+
 export interface VoteCreateManyWithoutUserInput {
   create?: Maybe<VoteCreateWithoutUserInput[] | VoteCreateWithoutUserInput>;
   connect?: Maybe<VoteWhereUniqueInput[] | VoteWhereUniqueInput>;
@@ -555,6 +572,7 @@ export interface LinkCreateWithoutVotesInput {
   description: String;
   url: String;
   postedBy?: Maybe<UserCreateOneWithoutLinksInput>;
+  comments?: Maybe<CommentCreateManyWithoutLinkInput>;
 }
 
 export interface UserCreateOneWithoutLinksInput {
@@ -570,12 +588,12 @@ export interface UserCreateWithoutLinksInput {
   votes?: Maybe<VoteCreateManyWithoutUserInput>;
 }
 
-export interface LinkCreateOneInput {
-  create?: Maybe<LinkCreateInput>;
+export interface LinkCreateOneWithoutCommentsInput {
+  create?: Maybe<LinkCreateWithoutCommentsInput>;
   connect?: Maybe<LinkWhereUniqueInput>;
 }
 
-export interface LinkCreateInput {
+export interface LinkCreateWithoutCommentsInput {
   id?: Maybe<ID_Input>;
   description: String;
   url: String;
@@ -585,8 +603,8 @@ export interface LinkCreateInput {
 
 export interface CommentUpdateInput {
   body?: Maybe<String>;
-  postedBt?: Maybe<UserUpdateOneRequiredInput>;
-  link?: Maybe<LinkUpdateOneRequiredInput>;
+  createdBy?: Maybe<UserUpdateOneRequiredInput>;
+  link?: Maybe<LinkUpdateOneRequiredWithoutCommentsInput>;
 }
 
 export interface UserUpdateOneRequiredInput {
@@ -635,6 +653,7 @@ export interface LinkUpdateWithoutPostedByDataInput {
   description?: Maybe<String>;
   url?: Maybe<String>;
   votes?: Maybe<VoteUpdateManyWithoutLinkInput>;
+  comments?: Maybe<CommentUpdateManyWithoutLinkInput>;
 }
 
 export interface VoteUpdateManyWithoutLinkInput {
@@ -706,6 +725,104 @@ export interface VoteScalarWhereInput {
   AND?: Maybe<VoteScalarWhereInput[] | VoteScalarWhereInput>;
   OR?: Maybe<VoteScalarWhereInput[] | VoteScalarWhereInput>;
   NOT?: Maybe<VoteScalarWhereInput[] | VoteScalarWhereInput>;
+}
+
+export interface CommentUpdateManyWithoutLinkInput {
+  create?: Maybe<
+    CommentCreateWithoutLinkInput[] | CommentCreateWithoutLinkInput
+  >;
+  delete?: Maybe<CommentWhereUniqueInput[] | CommentWhereUniqueInput>;
+  connect?: Maybe<CommentWhereUniqueInput[] | CommentWhereUniqueInput>;
+  set?: Maybe<CommentWhereUniqueInput[] | CommentWhereUniqueInput>;
+  disconnect?: Maybe<CommentWhereUniqueInput[] | CommentWhereUniqueInput>;
+  update?: Maybe<
+    | CommentUpdateWithWhereUniqueWithoutLinkInput[]
+    | CommentUpdateWithWhereUniqueWithoutLinkInput
+  >;
+  upsert?: Maybe<
+    | CommentUpsertWithWhereUniqueWithoutLinkInput[]
+    | CommentUpsertWithWhereUniqueWithoutLinkInput
+  >;
+  deleteMany?: Maybe<CommentScalarWhereInput[] | CommentScalarWhereInput>;
+  updateMany?: Maybe<
+    | CommentUpdateManyWithWhereNestedInput[]
+    | CommentUpdateManyWithWhereNestedInput
+  >;
+}
+
+export interface CommentUpdateWithWhereUniqueWithoutLinkInput {
+  where: CommentWhereUniqueInput;
+  data: CommentUpdateWithoutLinkDataInput;
+}
+
+export interface CommentUpdateWithoutLinkDataInput {
+  body?: Maybe<String>;
+  createdBy?: Maybe<UserUpdateOneRequiredInput>;
+}
+
+export interface CommentUpsertWithWhereUniqueWithoutLinkInput {
+  where: CommentWhereUniqueInput;
+  update: CommentUpdateWithoutLinkDataInput;
+  create: CommentCreateWithoutLinkInput;
+}
+
+export interface CommentScalarWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  createdAt?: Maybe<DateTimeInput>;
+  createdAt_not?: Maybe<DateTimeInput>;
+  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_lt?: Maybe<DateTimeInput>;
+  createdAt_lte?: Maybe<DateTimeInput>;
+  createdAt_gt?: Maybe<DateTimeInput>;
+  createdAt_gte?: Maybe<DateTimeInput>;
+  updatedAt?: Maybe<DateTimeInput>;
+  updatedAt_not?: Maybe<DateTimeInput>;
+  updatedAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updatedAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updatedAt_lt?: Maybe<DateTimeInput>;
+  updatedAt_lte?: Maybe<DateTimeInput>;
+  updatedAt_gt?: Maybe<DateTimeInput>;
+  updatedAt_gte?: Maybe<DateTimeInput>;
+  body?: Maybe<String>;
+  body_not?: Maybe<String>;
+  body_in?: Maybe<String[] | String>;
+  body_not_in?: Maybe<String[] | String>;
+  body_lt?: Maybe<String>;
+  body_lte?: Maybe<String>;
+  body_gt?: Maybe<String>;
+  body_gte?: Maybe<String>;
+  body_contains?: Maybe<String>;
+  body_not_contains?: Maybe<String>;
+  body_starts_with?: Maybe<String>;
+  body_not_starts_with?: Maybe<String>;
+  body_ends_with?: Maybe<String>;
+  body_not_ends_with?: Maybe<String>;
+  AND?: Maybe<CommentScalarWhereInput[] | CommentScalarWhereInput>;
+  OR?: Maybe<CommentScalarWhereInput[] | CommentScalarWhereInput>;
+  NOT?: Maybe<CommentScalarWhereInput[] | CommentScalarWhereInput>;
+}
+
+export interface CommentUpdateManyWithWhereNestedInput {
+  where: CommentScalarWhereInput;
+  data: CommentUpdateManyDataInput;
+}
+
+export interface CommentUpdateManyDataInput {
+  body?: Maybe<String>;
 }
 
 export interface LinkUpsertWithWhereUniqueWithoutPostedByInput {
@@ -825,6 +942,7 @@ export interface LinkUpdateWithoutVotesDataInput {
   description?: Maybe<String>;
   url?: Maybe<String>;
   postedBy?: Maybe<UserUpdateOneWithoutLinksInput>;
+  comments?: Maybe<CommentUpdateManyWithoutLinkInput>;
 }
 
 export interface UserUpdateOneWithoutLinksInput {
@@ -864,27 +982,36 @@ export interface UserUpsertNestedInput {
   create: UserCreateInput;
 }
 
-export interface LinkUpdateOneRequiredInput {
-  create?: Maybe<LinkCreateInput>;
-  update?: Maybe<LinkUpdateDataInput>;
-  upsert?: Maybe<LinkUpsertNestedInput>;
+export interface LinkUpdateOneRequiredWithoutCommentsInput {
+  create?: Maybe<LinkCreateWithoutCommentsInput>;
+  update?: Maybe<LinkUpdateWithoutCommentsDataInput>;
+  upsert?: Maybe<LinkUpsertWithoutCommentsInput>;
   connect?: Maybe<LinkWhereUniqueInput>;
 }
 
-export interface LinkUpdateDataInput {
+export interface LinkUpdateWithoutCommentsDataInput {
   description?: Maybe<String>;
   url?: Maybe<String>;
   postedBy?: Maybe<UserUpdateOneWithoutLinksInput>;
   votes?: Maybe<VoteUpdateManyWithoutLinkInput>;
 }
 
-export interface LinkUpsertNestedInput {
-  update: LinkUpdateDataInput;
-  create: LinkCreateInput;
+export interface LinkUpsertWithoutCommentsInput {
+  update: LinkUpdateWithoutCommentsDataInput;
+  create: LinkCreateWithoutCommentsInput;
 }
 
 export interface CommentUpdateManyMutationInput {
   body?: Maybe<String>;
+}
+
+export interface LinkCreateInput {
+  id?: Maybe<ID_Input>;
+  description: String;
+  url: String;
+  postedBy?: Maybe<UserCreateOneWithoutLinksInput>;
+  votes?: Maybe<VoteCreateManyWithoutLinkInput>;
+  comments?: Maybe<CommentCreateManyWithoutLinkInput>;
 }
 
 export interface LinkUpdateInput {
@@ -892,6 +1019,7 @@ export interface LinkUpdateInput {
   url?: Maybe<String>;
   postedBy?: Maybe<UserUpdateOneWithoutLinksInput>;
   votes?: Maybe<VoteUpdateManyWithoutLinkInput>;
+  comments?: Maybe<CommentUpdateManyWithoutLinkInput>;
 }
 
 export interface LinkUpdateManyMutationInput {
@@ -984,7 +1112,7 @@ export interface CommentPromise extends Promise<Comment>, Fragmentable {
   createdAt: () => Promise<DateTimeOutput>;
   updatedAt: () => Promise<DateTimeOutput>;
   body: () => Promise<String>;
-  postedBt: <T = UserPromise>() => T;
+  createdBy: <T = UserPromise>() => T;
   link: <T = LinkPromise>() => T;
 }
 
@@ -995,7 +1123,7 @@ export interface CommentSubscription
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
   updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
   body: () => Promise<AsyncIterator<String>>;
-  postedBt: <T = UserSubscription>() => T;
+  createdBy: <T = UserSubscription>() => T;
   link: <T = LinkSubscription>() => T;
 }
 
@@ -1006,7 +1134,7 @@ export interface CommentNullablePromise
   createdAt: () => Promise<DateTimeOutput>;
   updatedAt: () => Promise<DateTimeOutput>;
   body: () => Promise<String>;
-  postedBt: <T = UserPromise>() => T;
+  createdBy: <T = UserPromise>() => T;
   link: <T = LinkPromise>() => T;
 }
 
@@ -1120,6 +1248,15 @@ export interface LinkPromise extends Promise<Link>, Fragmentable {
     first?: Int;
     last?: Int;
   }) => T;
+  comments: <T = FragmentableArray<Comment>>(args?: {
+    where?: CommentWhereInput;
+    orderBy?: CommentOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
 }
 
 export interface LinkSubscription
@@ -1140,6 +1277,15 @@ export interface LinkSubscription
     first?: Int;
     last?: Int;
   }) => T;
+  comments: <T = Promise<AsyncIterator<CommentSubscription>>>(args?: {
+    where?: CommentWhereInput;
+    orderBy?: CommentOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
 }
 
 export interface LinkNullablePromise
@@ -1154,6 +1300,15 @@ export interface LinkNullablePromise
   votes: <T = FragmentableArray<Vote>>(args?: {
     where?: VoteWhereInput;
     orderBy?: VoteOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  comments: <T = FragmentableArray<Comment>>(args?: {
+    where?: CommentWhereInput;
+    orderBy?: CommentOrderByInput;
     skip?: Int;
     after?: String;
     before?: String;

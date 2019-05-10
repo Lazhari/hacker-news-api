@@ -6,6 +6,7 @@ type Link {
   url: String!
   postedBy: User
   votes: [Vote!]! @relation(onDelete: CASCADE)
+  comments: [Comment!]! @relation(onDelete: CASCADE)
 }
 
 type Comment {
@@ -13,7 +14,7 @@ type Comment {
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
   body: String!
-  postedBt: User!
+  createdBy: User!
   link: Link!
 }
 
