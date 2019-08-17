@@ -17,17 +17,15 @@ ENV PRISMA_MANAGEMENT_API_SECRET $PRISMA_MANAGEMENT_API_SECRET
 ENV NODE_ENV $NODE_ENV
 ENV PRISMA_END_POINT PRISMA_END_POINT
 
-RUN npm i -g prisma --silent
+RUN apk add --no-cache tini
 
+RUN npm i -g prisma --silent
 COPY package*.json ./
 
 RUN npm config list
 RUN npm ci \
     && npm cache clean --force
 ENV PATH /app/node_modules/.bin:$PATH
-# ENV TINI_VERSION v0.18.0
-# ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
-# RUN chmod +x /tini
 
 # ENTRYPOINT ["/tini", "--"]
 CMD ["node", "src"]
