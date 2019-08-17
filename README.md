@@ -41,4 +41,26 @@ Launch your GraphQL server with this command:
 npm run start
 ```
 
+## Use Compose for dev environment
+
+### Run prisma deploy from docker-compose
+
+```bash
+docker-compose run api prisma deploy
+```
+
+### Run docker-compose up ⚡ to start app
+
+```bash
+docker-compose up
+```
+
+### Running prisma with docker-compose exec
+
+When you update your prisma models, you need to deploy that to prisma. Then you can run this command:
+
+```bash
+docker-compose exec api prisma deploy
+```
+
 Navigate to [http://localhost:4000](http://localhost:4000) in your browser to explore the API of you GraphQL server in a [GraphQL Playground](https://github.com/prisma/graphql-playground).

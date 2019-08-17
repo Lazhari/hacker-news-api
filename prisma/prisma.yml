@@ -1,5 +1,6 @@
 # The HTTP endpoint for your Prisma API
-endpoint: https://eu1.prisma.sh/lazhari-5ef366/hackernews-node/dev
+# https://eu1.prisma.sh/lazhari-5ef366/hackernews-node/dev
+endpoint: ${env:PRISMA_END_POINT}
 secret: mysecret42
 # Points to the file that contains your datamodel
 datamodel: datamodel.prisma
